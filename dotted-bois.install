@@ -1,0 +1,28 @@
+#!/bin/bash
+
+cat <<EOF
+######                                         ######                  
+#     #  ####  ##### ##### ###### #####        #     #  ####  #  ####  
+#     # #    #   #     #   #      #    #       #     # #    # # #      
+#     # #    #   #     #   #####  #    # ##### ######  #    # #  ####  
+#     # #    #   #     #   #      #    #       #     # #    # #      # 
+#     # #    #   #     #   #      #    #       #     # #    # # #    # 
+######   ####    #     #   ###### #####        ######   ####  #  ####  
+EOF
+
+echo "Currently running from $(pwd)"
+install_candidates=$(cat locfile | cut -d$'\t' -f 1)
+install_locs=$(cat locfile | cut -d$'\t' -f 2)
+echo 
+for fnum in $(seq 1 $(echo "$install_locs" | wc -l)); do 
+    echo $fnum
+    cur_cand=$(echo $install_candidates | sed -n "${fnum}p")
+    cur_loc=$(echo $install_locs | sed -n "${fnum}p")
+    if [[ -f "$cur_loc" ]]; then
+	read -p "Overwrite your existing $cur_cand file? (y/n) "
+	if [[ $REPLY == 'n' ]]; then continue; fi
+    fi
+    cp $cur_cand $cur_loc &&
+	echo "Copied $cur_cand to $cur_loc"
+done
+    
